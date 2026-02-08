@@ -1,15 +1,19 @@
 from hyprpy import Hyprland
 from hyprpy.utils.shell import run_or_fail
 import toml
+from pathlib import Path
 
 inst = Hyprland()
 
-#log = True
+config_path = Path("~/.config/layouter/config.toml").expanduser()
+with config_path.open("r", encoding="utf-8") as c:
+    config = toml.load(c)
 
-config = toml.load('config.toml')
 user_keyboard = config['keyboards'][0]
 
 layout = None
+
+#log = True
 
 # doesn't work for some reason? Probably i'm just stupid
 
