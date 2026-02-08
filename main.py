@@ -4,7 +4,7 @@ import toml
 
 inst = Hyprland()
 
-log = True
+#log = True
 
 config = toml.load('config.toml')
 user_keyboard = config['keyboards'][0]
