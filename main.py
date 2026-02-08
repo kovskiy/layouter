@@ -1,26 +1,36 @@
 from hyprpy import Hyprland
 from hyprpy.utils.shell import run_or_fail
+import toml
 
-trigger = "vesktop"
+inst = Hyprland()
 
-inst= Hyprland()
+log = True
 
-user_keyboard = str(input("Enter your device name (you can get it using 'hyprctl devices' command!): "))
+config = toml.load('config.toml')
+user_keyboard = config['keyboards'][0]
 
-def current_layout(sender, **kwargs):
-    layout = kwargs["layout_name"]
-    keyboard = kwargs["keyboard_name"]
+layout = None
 
-    print(f"{layout}", "+", f"{keyboard}")
+# doesn't work for some reason? Probably i'm just stupid
 
-def super_window(sender, **kwargs):
+#def logger(sender, **kwargs):
+#    w = kwargs["window_class"]
+#    l = kwargs["layout_name"]
+#    k = kwargs["keyboard_name"]
+#
+#    if log = True:
+#        print(f"current class is '{w}', layout is '{l}' and keyboard is '{k}'")
+
+def switcher(sender, **kwargs):
     win = kwargs["window_class"]
 
-    print(f"current class is: {win}")
-    if win == trigger:
-        run_or_fail(["hyprctl", "switchxkblayout", f"{user_keyboard}", "2"])
+    for index, windows, in config['layouts'].items():
+        if win in windows:
+            layout = index
+            run_or_fail(["hyprctl", "switchxkblayout", f"{user_keyboard}", f"{layout}"])
 
-inst.signals.activelayout.connect(current_layout)
-inst.signals.activewindow.connect(super_window)
+#inst.signals.activewindow.connect(logger)
+#inst.signals.activelayout.connect(logger)
+inst.signals.activewindow.connect(switcher)
 
 inst.watch()
