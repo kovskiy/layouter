@@ -1,0 +1,18 @@
+keyboards = [
+    "keychron-keychron-v3-keyboard"
+]
+
+[layouts]
+0 = [
+    "kitty",
+    "code-oss"
+]
+
+1 = [
+    "zen"
+]
+
+2 = [
+    "discord",
+    "vesktop"
+]
