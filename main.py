@@ -2,6 +2,8 @@ from hyprpy import Hyprland
 from hyprpy.utils.shell import run_or_fail
 import toml
 from pathlib import Path
+import argparse
+from logger import logger_window, logger_layout
 
 inst = Hyprland()
 
@@ -13,18 +15,6 @@ user_keyboard = config['keyboards'][0]
 
 layout = None
 
-#log = True
-
-# doesn't work for some reason? Probably i'm just stupid
-
-#def logger(sender, **kwargs):
-#    w = kwargs["window_class"]
-#    l = kwargs["layout_name"]
-#    k = kwargs["keyboard_name"]
-#
-#    if log = True:
-#        print(f"current class is '{w}', layout is '{l}' and keyboard is '{k}'")
-
 def switcher(sender, **kwargs):
     win = kwargs["window_class"]
 
@@ -33,8 +23,20 @@ def switcher(sender, **kwargs):
             layout = index
             run_or_fail(["hyprctl", "switchxkblayout", f"{user_keyboard}", f"{layout}"])
 
-#inst.signals.activewindow.connect(logger)
-#inst.signals.activelayout.connect(logger)
+log = False
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--debug",
+    action="store_true"
+)
+
+args = parser.parse_args()
+log = args.debug
+
+if log:
+    inst.signals.activewindow.connect(logger_window)
+    inst.signals.activelayout.connect(logger_layout)
 inst.signals.activewindow.connect(switcher)
 
 inst.watch()
